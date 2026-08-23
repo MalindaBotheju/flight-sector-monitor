@@ -1,0 +1,32 @@
+name: Flight Pipeline
+
+on:
+  schedule:
+    # Runs every 15 minutes. GitHub Actions cron is UTC and not perfectly
+    # punctual under load — occasional few-minute drift is normal, not a bug.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    # Lets you trigger a run manually from the Actions tab, for testing.
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENSKY_CLIENT_ID: ${{ secrets.OPENSKY_CLIENT_ID }}
+          OPENSKY_CLIENT_SECRET: ${{ secrets.OPENSKY_CLIENT_SECRET }}
+        run: python main.py

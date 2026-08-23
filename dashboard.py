@@ -161,10 +161,11 @@ for col, (label, value) in zip(kpi_cols, kpis):
     </div>
     """, unsafe_allow_html=True)
 
+last_ingested_local = pd.to_datetime(row["last_ingested_at"]).tz_convert("Asia/Colombo")
 st.markdown(
     f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;'
     f'color:{TEXT_MUTED};margin-top:0.6rem;">'
-    f'last ingested · {row["last_ingested_at"]}</div>',
+    f'last ingested · {last_ingested_local.strftime("%Y-%m-%d %H:%M:%S")} (Colombo time)</div>',
     unsafe_allow_html=True,
 )
 

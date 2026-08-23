@@ -42,9 +42,11 @@ CREATE INDEX IF NOT EXISTS idx_flight_positions_ingested_at
 -- ============================================================
 
 -- Aircraft activity per hour (for a time-series chart)
+-- Bucketed in local time (Asia/Colombo, UTC+5:30) rather than UTC,
+-- so the chart's hour labels match what the viewer actually experiences.
 CREATE OR REPLACE VIEW v_hourly_activity AS
 SELECT
-    date_trunc('hour', to_timestamp(last_contact)) AS hour_bucket,
+    date_trunc('hour', to_timestamp(last_contact) AT TIME ZONE 'Asia/Colombo') AS hour_bucket,
     COUNT(DISTINCT icao24) AS unique_aircraft,
     COUNT(*) AS total_observations
 FROM flight_positions
